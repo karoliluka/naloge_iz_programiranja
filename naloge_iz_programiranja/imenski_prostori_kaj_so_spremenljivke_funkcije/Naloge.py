@@ -33,6 +33,42 @@ def alterniraj(s):
             seznam.append(drugi)
     s[:] = seznam
 
+def dodaj_isti(s):
+    kopija = s[:]
+    for tab in s:
+        kopija.append(tab)
+    s[:] = kopija
+
+def dodaj_enak(s):
+    kopija = s[:]
+    for tab in s:
+        kopija.append(tab.copy())
+    s[:] = kopija
+
+def poenoti(s):
+    videni = {}
+    for i, el in enumerate(s):
+        kljuc = tuple(el)
+        if kljuc in videni:
+            s[i] = videni[kljuc]
+        else:
+            videni[kljuc] = s[i]
+
+def razenoti(s):
+    for i, el in enumerate(s):
+        s[i] = s[i].copy()
+
+def slikaj(f, s):
+    return [f(el) for el in s]
+
+#ali
+
+def slikaj(f, s):
+    return list(map(f, s))
+
+
+
+
 
 
 ### ^^^ Naloge rešujte nad tem komentarjem. ^^^ ###
