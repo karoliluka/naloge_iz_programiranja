@@ -927,7 +927,108 @@ def najdaljse_ime(oseba):
     return najdaljse
 """
 
-#167 Stopnice
+#18. 8. 2026
+
+#128. Globina rodbine
+"""
+def globina(oseba):
+    if rodovnik[oseba] == []:
+        return 1
+
+    globine = []
+    for otrok in rodovnik[oseba]:
+        globine.append(globina(otrok))
+
+    return max(globine) + 1
+
+print(globina("Hans"))
+print(globina('Ulrik II.'))
+print(globina('Friderik I.'))
+"""
+
+#129. Kolikokrat ime
+"""
+def kolikokrat_ime(oseba, ime):
+    stevec = 0
+    if oseba.split()[0] == ime:
+        stevec += 1
+
+    for otrok in rodovnik[oseba]:
+        stevec += kolikokrat_ime(otrok, ime)
+
+    return stevec
+
+print(kolikokrat_ime('Friderik I.', 'Friderik'))
+"""
+
+#130. Koliko žensk
+"""
+def zensk_v_rodbini(oseba):
+    stevec = 0
+    if oseba.split()[0][-1] == "a":
+        stevec += 1
+
+    for otrok in rodovnik[oseba]:
+        stevec += zensk_v_rodbini(otrok)
+
+    return stevec
+
+print(zensk_v_rodbini('Friderik I.'))
+"""
+
+
+#131. Naštej rodbino
+"""
+def vsa_rodbina(oseba):
+    if rodovnik[oseba] == []:
+        return set([oseba])
+
+    rodbina = set([oseba])
+    for otrok in rodovnik[oseba]:
+        rodbina |= vsa_rodbina(otrok)
+
+    return rodbina
+
+print(vsa_rodbina('Ulrik II.'))
+"""
+
+#132. Naštej potomce
+"""
+def vse_potomstvo(oseba):
+    if rodovnik[oseba] == []:
+        return set()
+
+    potomci = set(rodovnik[oseba])
+    for otrok in rodovnik[oseba]:
+        potomci |= vse_potomstvo(otrok)
+
+    return potomci
+
+print(vse_potomstvo("Ulrik II."))
+
+def vse_potomstvo(oseba):
+    return vsa_rodbina(oseba) - {oseba}
+"""
+
+#133. Največ otrok
+"""
+def najvec_otrok(oseba):
+    if rodovnik[oseba] == []:
+        return 0
+
+    najvec = len(rodovnik[oseba])
+    for otrok in rodovnik[oseba]:
+        if najvec_otrok(otrok) > najvec:
+            najvec = najvec_otrok(otrok)
+
+    return najvec
+
+print(najvec_otrok('Friderik I.'))
+print(najvec_otrok('Ulrik II.'))
+"""
+
+
+#167. Stopnice
 """
 def kako_visoko(stopnice):
     if stopnice[0] > 20:
@@ -1209,10 +1310,11 @@ print(racunovodja([("Ana", 2), ("Berta", 8), ("Ana", 4), ("Berta", -3)]))
 """
 
 #184. Srečni gostje
-
+"""
 def je_zenska(emso):
     stevilka = str(emso[9]) + str(emso[10]) + str(emso[11])
     return 500 <= int(stevilka) <= 999
+"""
 """
 
 def stevilo_srecnezev(razpored):
@@ -1501,7 +1603,5 @@ def sodi_vs_lihi(s):
 
 print(sodi_vs_lihi(([])))
 """
-
-#197. Gnezdeni oklepaji
 
 
