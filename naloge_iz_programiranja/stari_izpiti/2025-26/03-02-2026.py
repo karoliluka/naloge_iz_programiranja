@@ -60,6 +60,9 @@ def naj_veriga(aktivnosti, aktivnost):
             je_delal = False
             seznam.append(stevilo_dni)
             stevilo_dni = 0
+
+    if je_delal:
+        seznam.append(stevilo_dni)
     return max(seznam)
 
 def naj_aktivnost(aktivnosti):
