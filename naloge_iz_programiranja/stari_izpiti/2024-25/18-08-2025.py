@@ -24,10 +24,74 @@ def najblizje3(postaja):
 
     return sorted(seznam_parov, key=lambda postaja: postaja[0])[:3]
 
+def dosegljive(postaja, razdalja_dosegljive, otok):
+    if postaja in otok:
+        return
 
+    otok.add(postaja)
+    seznam_postaj = []
+    for station in postaje:
+        if station != postaja:
+            seznam_postaj.append((razdalja(postaja, station), station))
 
+    for distance, ime_postaje in seznam_postaj:
+        if distance <= razdalja_dosegljive:
+            dosegljive(ime_postaje, razdalja_dosegljive, otok)
 
+def najblizja_soseda(postaja):
+    razdalje = []
+    for druga_postaja in postaje:
+        if druga_postaja != postaja:
+            razdalje.append(razdalja(postaja, druga_postaja))
+    return min(razdalje)
 
+def izolirana():
+    seznam_postaj = []
+    for station in postaje:
+        seznam_postaj.append(station)
+
+    seznam_najblizjih_sosed = []
+    for station in postaje:
+        seznam_najblizjih_sosed.append((najblizja_soseda(station), station))
+
+    return max(seznam_najblizjih_sosed)[1]
+
+def zapisi(ime_datoteke):
+    ime_datoteke = open(ime_datoteke, "w", encoding="utf-8")
+    sortirane_postaje = dict(dict())
+    for ime_postaje, info_postaje in sorted(postaje.items()):
+        sortirane_postaje[ime_postaje] = info_postaje
+
+    for ime_postaje, info_postaje in sortirane_postaje.items():
+        ime_datoteke.write(f"{ime_postaje:<40}{sortirane_postaje[ime_postaje]['bikes']:>2}/{sortirane_postaje[ime_postaje]['capacity']:<2}\n")
+
+def preberi(ime_datoteke):
+    slovar = dict()
+    for vrstica in open(ime_datoteke, "r", encoding="utf-8"):
+        ime_postaje = " ".join(vrstica.strip().split()[:-1])
+        podatki = vrstica.strip().split()[-1]
+        par_podatkov = tuple(podatki.split("/"))
+        slovar[ime_postaje] = par_podatkov
+    return slovar
+
+class Koordinator():
+    def __init__(self):
+        self.postaje = postaje
+
+    def stanje(self, postaja):
+        return self.postaje[postaja]['bikes']
+
+    def odpelji(self, postaja):
+        if self.postaje[postaja]['bikes'] > 0:
+            self.postaje[postaja]['bikes'] -= 1
+            return True
+        return False
+
+    def vrni(self, postaja):
+        if self.postaje[postaja]['bikes'] < self.postaje[postaja]['capacity']:
+            self.postaje[postaja]['bikes'] += 1
+            return True
+        return False
 
 
 postaje = {'LIDL BEŽIGRAD': {'latitude': 46.063797,
