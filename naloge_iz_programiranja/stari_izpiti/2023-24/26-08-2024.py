@@ -1,5 +1,6 @@
 
 import unittest
+from collections import defaultdict, Counter
 from operator import index
 
 
@@ -60,11 +61,57 @@ def obdobje_brez(a):
     return najvecje_obdobje[0:2]
 
 def obremenitve(imena, porocila):
-    return
+    slovar = defaultdict(int)
+
+    for ime in imena:
+        slovar[ime] = 0
+
+    j = len(imena)
+    x = 0
+    for i, ime in enumerate(imena):
+        for prehod in range(x, len(porocila), j):
+            slovar[ime] += porocila[prehod]
+        x += 1
+
+    return max(slovar, key=slovar.get)
+
+def zlata_minuta(i, a):
+    if i < 60:
+        return True
+
+    if i >= 60 and a[i] > 0 and (zlata_minuta(i // 2, a) or zlata_minuta((i + 1) // 2, a)):
+        return True
+    return False
 
 
+class Senzor:
+    def __init__(self, id):
+        self.id = id
+        self.smeri = {"+": 0, "-": 0}
 
+    def prehod(self, smer):
+        self.smeri[smer] += 1
 
+    def prehodov(self):
+        seznam_st = []
+        for smer, st in self.smeri.items():
+            seznam_st.append(st)
+        return tuple(seznam_st)
+
+class NadzorniSistem:
+    def __init__(self, seznam_senzorjev):
+        self.seznam_senzorjev = seznam_senzorjev
+
+    def prehod(self, id, smer):
+        for senzor in self.seznam_senzorjev:
+            if id == senzor.id:
+                senzor.prehod(smer)
+
+    def prehodov(self, id):
+        for senzor in self.seznam_senzorjev:
+            if id == senzor.id:
+                return senzor.prehodov()
+        return None
 
 
 class Test(unittest.TestCase):
