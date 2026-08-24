@@ -1,6 +1,9 @@
 import unittest
 import warnings
 import random
+from collections import Counter, defaultdict
+from traceback import print_tb
+
 
 def vrhovi(okuzbe):
     seznam_valov = []
@@ -30,6 +33,96 @@ def vrhovi(okuzbe):
         koncni_seznam.append((indeks_dneva - 1) / (dolzina_vala - 1))
 
     return koncni_seznam
+
+def najpodobnejsi(vzorec, sevi, markerji):
+    markerji_v_vzorcu = {marker for marker in markerji if marker in vzorec}
+
+    najboljsi_sev = None
+    najvec_ujemanj = -1
+
+    for sev in sevi:
+        markerji_v_sevu = {marker for marker in markerji if marker in sev}
+        ujemanja = len(markerji) - len(markerji_v_vzorcu ^ markerji_v_sevu)
+
+        if ujemanja > najvec_ujemanj:
+            najvec_ujemanj = ujemanja
+            najboljsi_sev = sev
+
+    return najboljsi_sev
+
+def stanje_regij():
+    slovar = dict() #kljuci so vse regije, ki se pojavijo v prvi datoteki, vrednosti pa delez okuzenih npr. {Osrednjeslovenska : delez (sum(okuzbe) / sum(st_prebivalcev))
+    slovar_obcin = defaultdict(list)
+    with open("obcine.txt", "r", encoding="utf-8") as datoteka_obcine:
+        for vrstica in datoteka_obcine:
+            obcina = vrstica.strip().split(",")[0]
+            st_prebivalcev = vrstica.strip().split(", ")[1]
+            pripadajoca_regija = vrstica.strip().split(", ")[2]
+            slovar_obcin[pripadajoca_regija].append((obcina, st_prebivalcev))
+
+    slovar_mest = defaultdict(int)
+    with open("okuzbe.txt", "r", encoding="utf-8") as datoteka_okuzbe:
+        for vrstica in datoteka_okuzbe:
+            mesto = vrstica.strip().split(": ")[0]
+            st_okuzb = vrstica.strip().split(": ")[1]
+            slovar_mest[mesto] += int(st_okuzb)
+
+    slovar_regija_delez = defaultdict()
+    for regija, mesta_prebivalci in slovar_obcin.items():
+        st_vseh_prebivalcev = 0
+        st_vseh_okuzb = 0
+        for city, residents in mesta_prebivalci:
+            st_vseh_prebivalcev += int(residents)
+            for mesto, st_okuzb in slovar_mest.items():
+                if mesto == city:
+                    st_vseh_okuzb += st_okuzb
+        slovar_regija_delez[regija] = st_vseh_okuzb / st_vseh_prebivalcev
+    return slovar_regija_delez
+
+def argmax(s):
+    if len(s) == 1:
+        return 0, s[0]
+
+    idx_rest, max_rest = argmax(s[1:])
+
+    if s[0] >= max_rest:
+        return 0, s[0]
+    else:
+        return idx_rest + 1, max_rest
+
+class Sledilnik:
+    def __init__(self):
+        self.naj_dnevnih = 0
+        self.tekoce_brez_okuzb = 0
+        self.naj_brez_okuzb = 0
+
+    def nov_dan(self, st_novookuzenih):
+        if st_novookuzenih > self.naj_dnevnih:
+            self.naj_dnevnih = st_novookuzenih
+
+
+        if st_novookuzenih == 0:
+            self.tekoce_brez_okuzb += 1
+        else:
+            self.tekoce_brez_okuzb = 0
+
+        if self.tekoce_brez_okuzb > self.naj_brez_okuzb:
+            self.naj_brez_okuzb = self.tekoce_brez_okuzb
+
+class Sledilnik2(Sledilnik):
+    def __init__(self):
+        super().__init__()
+        self.skupno_okuzenih = 0
+
+    def nov_dan(self, st_novookuzenih):
+        super().nov_dan(st_novookuzenih)
+        self.skupno_okuzenih += st_novookuzenih
+
+
+
+
+
+
 
 
 
