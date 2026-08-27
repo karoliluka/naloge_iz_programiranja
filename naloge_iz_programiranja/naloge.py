@@ -1,8 +1,10 @@
 import math
+import os
 import random
 from collections import defaultdict, Counter
 from datetime import date
 from enum import unique
+from itertools import pairwise, combinations
 
 #--------------
 #Čisti začetek
@@ -504,6 +506,122 @@ def se_ujema(beseda, vzorec):
     return True
 
 print(se_ujema("MLEKO", "ML..O"))
+
+#44 Prva beseda
+def prva_beseda(besede, vzorec):
+    for beseda in besede:
+        if se_ujema(beseda, vzorec):
+            return beseda
+    return None
+
+
+print(prva_beseda(["pes", "maca", "krava"], "p.s"))
+"""
+
+#45. Paralelni skoki
+"""
+def paralelni_skoki(skoki1, skoki2):
+    tocke_1, tocke_2 = 0, 0
+    for skok1, skok2 in zip(skoki1, skoki2):
+        if skok1 > skok2:
+            tocke_1 += 1
+        elif skok1 < skok2:
+            tocke_2 += 1
+        else:
+            tocke_1 += 0.5
+            tocke_2 += 0.5
+    if tocke_1 > tocke_2:
+        return 1
+    elif tocke_1 < tocke_2:
+        return 2
+    else:
+        return None
+
+print(paralelni_skoki([153, 141, 152, 160, 135], [148, 148, 148, 148, 148]))
+"""
+
+#46. Mesto največjega elementa
+"""
+def arg_max(s):
+    if not s:
+        return None
+    
+    najvec = 0
+    naj_indeks = 0
+    for indeks, num in enumerate(s):
+        if num > najvec:
+            najvec = num
+            naj_indeks = indeks
+    return naj_indeks
+
+print(arg_max([5, 1, 4, 8, 2, 3, 8, 8, 8]))
+"""
+
+#47. Olimpijske medalje
+"""
+def napredek(s):
+    napredovale = 0
+    nazadovale = 0
+    for indeks, number in enumerate(s, start=1):
+        if indeks != number:
+            if number > indeks:
+                napredovale += 1
+            elif number < indeks:
+                nazadovale += 1
+            else:
+                continue
+    return napredovale, nazadovale
+
+print(napredek([1, 3, 2, 4, 6, 10, 7, 5, 9, 8]))
+print(napredek([1, 2, 3, 4, 5]))
+print(napredek([2, 1, 3]))
+print(napredek([]))
+print(napredek([5, 4, 3, 2, 1]))
+"""
+
+#48. Vstavi teže
+"""
+def vstavi_teze(osebe, teze):
+    teze = teze.copy()  # da ne spremenimo izvirnega seznama tez
+    i = 0
+    j = 0
+    while i < len(osebe):
+        if not osebe[i].endswith("a"):
+            osebe[i] = teze[j]
+            j += 1
+        i += 1
+
+print(vstavi_teze(["Adam", "Eva", "Kajn", "Abel"], [87, 86, 75]))
+"""
+#49. Primerjanje seznamov
+"""
+def primerjaj(s, t):
+    if s == t:
+        return 0
+
+    if len(s) == len(t):
+        for el_s, el_t in zip(s, t):
+            if el_s > el_t:
+                return 1
+
+    if len(s) == len(t):
+        for el_s, el_t in zip(s, t):
+            if el_s < el_t:
+                return -1
+    return 0
+
+print(primerjaj([1, 2, 3, 4], [2, 3, 4, 5]))
+print(primerjaj([2, 3, 4, 5], [1, 2, 0, 0]))
+print(primerjaj([1, 2, 3], [4, 5, 6, 7]))
+print(primerjaj([1, 0], [0, 1]))
+"""
+
+#INDEKSIRANJE, SEZNAMI, NIZI
+
+#50. Spol in EMŠO
+"""
+def je_zenska(emso):
+    return int(emso[9:12]) >= 500
 """
 
 #15.5.2026
@@ -1026,7 +1144,6 @@ def najvec_otrok(oseba):
 print(najvec_otrok('Friderik I.'))
 print(najvec_otrok('Ulrik II.'))
 """
-
 
 #167. Stopnice
 """
@@ -1604,4 +1721,155 @@ def sodi_vs_lihi(s):
 print(sodi_vs_lihi(([])))
 """
 
+#27-08-2026
+#181. Napadalne kraljice
+"""
+
+def stolpec_prost(stolpec, razpored):
+    for x, y in razpored:
+        for s in stolpec:
+            if s == x:
+                return False
+    return True
+
+def prosti_stolpci(razpored):
+    vsi_stolpci = {chr(char) for char in range(int(ord("a")), int(ord("i")))}
+    razpored_stolpci = {coord[0] for coord in razpored}
+    return vsi_stolpci - razpored_stolpci
+
+def prost_stolpec(razpored):
+    vsi_stolpci = [chr(char) for char in range(int(ord("a")), int(ord("i")))]
+    kraljice_stolpci = [coord[0] for coord in razpored]
+
+    for stolpec in vsi_stolpci:
+        if stolpec not in kraljice_stolpci:
+            return stolpec
+    return None
+
+def napada(polje1, polje2):
+    x1 = ord(polje1[0]) - ord("a") + 1
+    y1 = int(polje1[1])
+    x2 = ord(polje2[0]) - ord("a") + 1
+    y2 = int(polje2[1])
+
+    return x1 == x2 or y1 == y2 or abs(x1 - x2) == abs(y1 - y2)
+
+def napadajo(polje, razpored):
+    seznam_napadajocih = []
+    for kraljica in razpored:
+        if napada(polje, kraljica):
+            seznam_napadajocih.append(kraljica)
+    return seznam_napadajocih
+
+def napadeno(polje, razpored):
+    for kraljica in razpored:
+        if napada(polje, kraljica):
+            return True
+    return False
+
+def prosto_v_stolpcu(stolpec, razpored):
+    vsa_polja = {"".join((stolpec, str(y))) for y in range(1, 9)}
+    napadeni = set()
+    for polje in vsa_polja:
+        for razp in razpored:
+            if napada(polje, razp):
+                napadeni.add(polje)
+    nenapadeni = list(vsa_polja - napadeni)
+    return nenapadeni
+
+def prosto_v_stolpcu(stolpec, razpored):
+    vsa_polja = {"".join((stolpec, str(y))) for y in range(1, 9)}
+    nenapadeni = []
+    for polje in vsa_polja:
+        if not napadeno(polje, razpored):
+            nenapadeni.append(polje)
+    return nenapadeni
+
+def napadajoce_se(razpored):
+    napdajoce_mnozica = set()
+    pari = combinations(razpored,2 )
+    for p1, p2 in pari:
+        if napada(p1, p2):
+            napdajoce_mnozica.add((p1, p2))
+    return napdajoce_mnozica
+
+def legalen(razpored):
+    if len(razpored) == 8 and not napadajoce_se(razpored):
+        return True
+    return False
+"""
+
+#204. Legalni konj
+"""
+def legalni_skoki(koordinate):
+    x = ord(koordinate[0]) - ord("a") + 1
+    y = int(koordinate[1])
+
+    premiki = [(2, 1), (2, -1), (-2, 1), (-2, -1),
+               (1, 2), (1, -2), (-1, 2), (-1, -2)]
+
+    seznam_dosegljivih = []
+    for dx, dy in premiki:
+        nov_x = x + dx
+        nov_y = y + dy
+        if 1 <= nov_x <= 8 and 1 <= nov_y <= 8:
+            novo_polje = chr(nov_x - 1 + ord("a")) + str(nov_y)
+            seznam_dosegljivih.append(novo_polje)
+
+    return seznam_dosegljivih
+"""
+
+#219. Slovar anagramov
+"""
+def slovar_anagramov(besede):
+    slovar = defaultdict(set)
+    for beseda in besede:
+        slovar["".join(sorted(beseda))].add(beseda)
+    return slovar
+
+def anagrami(beseda, s):
+    mnozica_anagramov = set()
+    for crke, besede in s.items():
+        if sorted(crke) == sorted(beseda):
+            mnozica_anagramov |= besede
+    return mnozica_anagramov
+"""
+
+#240. Vse datoeke s končnico .py
+"""
+pot = "C:\\Users\\Luka\\PycharmProjects\\PythonProject\\naloge_iz_programiranja"
+for item in os.listdir(pot):
+    if item.endswith(".py"):
+        print(item)
+
+def vse_py(pot):
+    seznam = []
+    for item in os.listdir(pot):
+        polna_pot = os.path.join(pot, item)
+        if os.path.isdir(polna_pot):
+            seznam.extend(vse_py(polna_pot))
+        elif os.path.isfile(polna_pot) and polna_pot.endswith(".py"):
+            seznam.append(polna_pot)
+    return seznam
+
+pot = "C:\\Users\\Luka\\PycharmProjects\\PythonProject\\naloge_iz_programiranja"
+print(vse_py(pot))
+"""
+
+#205. Skoki
+"""
+def skoki(s):
+    st_skokov = 0
+    trenutno = 0
+    while st_skokov <= len(s):
+        trenutno = s[trenutno]
+        st_skokov += 1
+
+        if trenutno == 0:
+            return st_skokov
+    return -2
+
+s = [3, 4, 0, 4, 2, 3]
+print(skoki(s))
+"""
 
