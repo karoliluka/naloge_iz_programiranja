@@ -780,6 +780,164 @@ def krizanka(vzorec, besede):
 print(krizanka("r.k.", ["reka", "rokav", "robot", "roka"]))
 """
 
+#61. Sosedi
+"""
+def stevilo_sosedov(prebivalci):
+    seznam = []
+    for i, hisa in enumerate(prebivalci):
+        levi = prebivalci[(i + 1) % len(prebivalci)]
+        desni = prebivalci[(i - 1) % len(prebivalci)]
+        seznam.append(levi + desni)
+    return seznam
+
+print(stevilo_sosedov([1,2,0,5]))
+"""
+
+#62. Glajenje
+"""
+def glajenje(zaporedje):
+    seznam_skupin = [zaporedje[i:i+4] for i in range(0, len(zaporedje) - 4 + 1)]
+    seznam_povprecij = [int(sum(skupina)/len(skupina)) for skupina in seznam_skupin]
+    return seznam_povprecij
+
+print(glajenje([3, 5, 8, 0, 7, -3, 12, 0, -5, 5]))
+"""
+
+#63. An ban pet podgan
+"""
+def an_ban(osebe):
+    osebe = osebe[:]
+    trenutna = 0
+    while len(osebe) > 1:
+        for i in range(10):
+            trenutna += 1
+            if trenutna == len(osebe):
+                trenutna = 0
+        del osebe[trenutna]
+        if trenutna == len(osebe):
+            trenutna = 0
+    return osebe[0]
+
+print(an_ban(["Maja", "Janja", "Sabina", "Ina", "Jasna"]))
+"""
+
+#64. Največji skupni delitelj seznama
+"""
+def skupni_delitelj(s):
+    rezultat = math.gcd(s[0], s[1])
+    for element in s[2:]:
+        rezultat = math.gcd(element, rezultat)
+    return rezultat
+
+print(skupni_delitelj([12, 18, 24]))       # 6  -  gcd(12,18)=6, gcd(6,24)=6
+"""
+
+#65. Oškodovani otroci
+"""
+def oskodovani(seznam):
+    vsi_otroci = [i for i in range(6)]
+    for otrok in vsi_otroci:
+        if otrok not in seznam:
+            return False
+    return True
+
+print(oskodovani([4, 0, 2, 3, 2, 0, 3, 4, 4, 4]))
+"""
+
+#66. Lomljenje čokolade
+"""
+def cokolada(n, odlomi):
+    m = n
+    for odlomek in odlomi:
+        if odlomek[0] == "<" or odlomek[0] == ">":
+            koliko = int(odlomek[1:])
+            if koliko > m:
+                m -= m
+            else:
+                m -= int(odlomek[1:])
+        elif odlomek[0] == "v" or odlomek[0] == "^":
+            koliko = int(odlomek[1:])
+            if koliko > n:
+                n -= n
+            else:
+                n -= int(odlomek[1:])
+    return n * m
+
+print(cokolada(10, ["<3", "v5"]))
+"""
+
+#78. Pokaži črke
+"""
+def pokazi_crke(beseda, crke):
+    nova_beseda = ""
+    for char in beseda:
+        if char not in crke:
+            nova_beseda += "."
+        else:
+            nova_beseda += char
+    return nova_beseda
+
+print(pokazi_crke("PONUDNIK", set(["O", "N"])))
+"""
+
+#79. Podobna beseda
+"""
+besede = ["ana", "berta", "cilka", "dani", "ema", "fanci", "greta", "hilda"]
+def podobna(beseda):
+    slovar_podobnosti = defaultdict(int)
+    crke_v_beseda = set(beseda.lower())
+    for word in besede:
+        for crka in set(word):
+            if crka in crke_v_beseda:
+                slovar_podobnosti[word] += 1
+    return max(slovar_podobnosti, key=slovar_podobnosti.get)
+
+print(podobna("merjasec"))
+"""
+
+#80. Število znakov
+"""
+def najraznolika(bes):
+    slovar_besed = defaultdict(int)
+    for beseda in bes:
+        slovar_besed[beseda] = len(set(beseda.lower()))
+    return max(slovar_besed, key=slovar_besed.get)
+
+print(najraznolika(["RABarbara", "izpit", "zmagA"]))
+"""
+
+#81. Najpogostejša beseda in črka
+"""
+def najpogostejsa_beseda(s):
+    slovar_besed = defaultdict(int)
+    for beseda in s.split(" "):
+        slovar_besed[beseda] += 1
+    return max(slovar_besed, key=slovar_besed.get)
+
+print(najpogostejsa_beseda('in to in ono in to smo mi'))
+
+def najpogostejsi_znak(s):
+    slovar_znakov = defaultdict(int)
+    for znak in s:
+        slovar_znakov[znak] += 1
+    return max(slovar_znakov, key=slovar_znakov.get)
+
+print(najpogostejsi_znak('in to in ono in to smo mi'))
+"""
+
+#82. Samo enkrat
+"""
+def samo_enkrat(s):
+    slovar_pojavitev = Counter(s)
+    for znak, pojavitev in slovar_pojavitev.items():
+        if pojavitev > 1:
+            return False
+    return True
+
+print(samo_enkrat("aa"))
+"""
+
+
 #15.5.2026
 """
 def funkcija(n):
