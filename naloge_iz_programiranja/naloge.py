@@ -1301,6 +1301,71 @@ print(najvec_otrok('Friderik I.'))
 print(najvec_otrok('Ulrik II.'))
 """
 
+#134. Največ vnukov
+"""
+def vnukov(oseba):
+    otroci = rodovnik[oseba]
+    st_vnukov = 0
+    for otrok in otroci:
+        st_vnukov += len(rodovnik[otrok])
+    return st_vnukov
+
+def najvec_vnukov(oseba):
+    if vnukov(oseba) == 0:
+        return 0
+
+    najvec = vnukov(oseba)
+    for otrok in rodovnik[oseba]:
+        naj_vnukov = najvec_vnukov(otrok)
+        if naj_vnukov > najvec:
+            najvec = naj_vnukov
+
+    return najvec
+
+print(najvec_vnukov("Friderik I."))
+"""
+
+#135. Največ sester
+"""
+def sester_pod(ime, rodovnik):
+    otroci = rodovnik[ime]
+    hcere = [otrok for otrok in otroci if otrok.split(" ")[0].endswith("a")]
+    st_hcera = len(hcere)
+
+    if st_hcera == 0:
+        return 0
+    elif st_hcera == len(otroci):
+        return st_hcera - 1
+    else:
+        return st_hcera
+
+def najvec_sester(oseba):
+    najvec = sester_pod(oseba, rodovnik)
+    for otrok in rodovnik[oseba]:
+        otrokovih = najvec_sester(otrok)
+        if otrokovih > najvec:
+            najvec = otrokovih
+    return najvec
+"""
+
+#136. Najplodovitejši
+"""
+def najvec_otrok_kdo(oseba):
+    if rodovnik[oseba] == []:
+        return 0, oseba
+
+    najvec = len(rodovnik[oseba]), oseba
+    for otrok in rodovnik[oseba]:
+        rezultat_otroka = najvec_otrok_kdo(otrok)
+        if rezultat_otroka[0] > najvec[0]:
+            najvec = rezultat_otroka
+
+    return najvec
+
+print(najvec_otrok_kdo('Friderik I.'))
+print(najvec_otrok_kdo('Ulrik II.'))
+"""
+
 #167. Stopnice
 """
 def kako_visoko(stopnice):
