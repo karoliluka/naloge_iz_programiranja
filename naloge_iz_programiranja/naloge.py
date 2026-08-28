@@ -624,6 +624,162 @@ def je_zenska(emso):
     return int(emso[9:12]) >= 500
 """
 
+#51. Pravilnost EMŠO
+"""
+def preveri_emso(emso):
+    print(emso)
+    j = 7
+    vsota = 0
+    for i in range(len(emso) - 1):
+        print(emso[i], j)
+        vsota += int(emso[i]) * j
+        if j == 2:
+            j = 7
+            continue
+        j -= 1
+
+    return (vsota + int(emso[-1])) % 11 == 0
+    
+    print(preveri_emso("0109005500399"))
+"""
+
+#52. Starost iz EMŠO
+"""
+def starost(emso):
+    dan = int(emso[0:2])
+    mesec = int(emso[2:4])
+    lll = int(emso[4:7])
+
+    if lll >= 500:
+        leto = 1000 + lll
+    else:
+        leto = 2000 + lll
+
+    danasnji_dan = 26
+    danasnji_mesec = 1
+    danasnje_leto = 2010
+
+    starost = danasnje_leto - leto
+
+    if mesec > danasnji_mesec:
+        starost -= 1
+    elif mesec == danasnji_mesec and dan > danasnji_dan:
+        starost -= 1
+
+    return starost
+"""
+
+#53. Domine
+"""
+def domine(s):
+    for domina1, domina2 in pairwise(s):
+        if domina1[1] != domina2[0]:
+            return False
+    return True
+
+print(domine([(3, 6), (6, 6), (6, 1), (1,0)]))
+print(domine([(3, 6), (6, 6), (2, 3)]))
+"""
+
+#54. Dan v letu
+"""
+def dan_v_letu(dan, mesec):
+    dni_v_mesecu = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    return sum(dni_v_mesecu[:mesec - 1]) + dan
+
+print(dan_v_letu(10, 2))
+"""
+
+#55. Nepadajoči seznam
+"""
+def nepadajoc(s):
+    for pred, po in pairwise(s):
+        if po < pred:
+            return False
+    return True
+
+print(nepadajoc([1, 2, 1, 4, 5, 6]))
+"""
+
+#56. Mesta črke
+"""
+def mesta_crke(beseda, crka):
+    mesta_crk = []
+    for i, letter in enumerate(beseda):
+        if letter == crka:
+            mesta_crk.append(i)
+    return mesta_crk
+
+
+print(mesta_crke("PONUDNIK","N"))
+"""
+
+#57. Multiplikativni range
+"""
+def mrange(n, k, m):
+    i = 1
+    seznam = [n]
+    while i <= m - 1:
+        n *= k
+        seznam.append(n)
+        i += 1
+    print(seznam)
+
+print(mrange(7, 4, 5))
+"""
+
+#58. Sumljive besede
+"""
+def sumljive(niz):
+    seznam_sumljivih = []
+    for beseda in niz.split(" "):
+        if "u" in beseda and "a" in beseda:
+            seznam_sumljivih.append(beseda)
+    return seznam_sumljivih
+
+
+print(sumljive('Muha pa je rekla: "Tale juha se je pa res prilegla, najlepsa huala," in odletela.'))
+"""
+
+#59. Kockarji
+"""
+def kockarji(s, n):
+    slovar_sest = defaultdict(int)
+    n_deli = [(s[i:i+n]) for i in range(0, len(s), n)]
+    for delcek in n_deli:
+        for i, num in enumerate(delcek, start=1):
+            if num == 6:
+                slovar_sest[i] += 1
+    if slovar_sest:
+        return max(slovar_sest, key=slovar_sest.get)
+    else:
+        return None
+
+print(kockarji([1, 2, 6, 1, 2, 6, 1, 6, 6, 1, 2, 1], 3))
+print((kockarji([1, 6, 1, 6, 2, 2], 2)))
+"""
+
+#60. Križanka
+"""
+def prva_druga(beseda, vzorec):
+    if len(beseda) != len(vzorec):
+        return False
+
+    for b, v in zip(beseda, vzorec):
+        if b != v and v != ".":
+            return False
+    return True
+
+def krizanka(vzorec, besede):
+    seznam_ujemajocih = []
+    for beseda in besede:
+        if prva_druga(beseda, vzorec):
+            seznam_ujemajocih.append(beseda)
+    return seznam_ujemajocih
+
+print(krizanka("r.k.", ["reka", "rokav", "robot", "roka"]))
+"""
+
 #15.5.2026
 """
 def funkcija(n):
