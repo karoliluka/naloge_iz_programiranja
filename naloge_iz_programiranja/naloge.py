@@ -1140,7 +1140,6 @@ def bomboniera(sirina, visina, pojedeno):
 print(bomboniera(8, 5, [(2, 1), (2, 4)]))
 """
 
-
 #15.5.2026
 """
 def funkcija(n):
@@ -1726,6 +1725,62 @@ def najvec_otrok_kdo(oseba):
 print(najvec_otrok_kdo('Friderik I.'))
 print(najvec_otrok_kdo('Ulrik II.'))
 """
+
+#137. Brez potomca
+def brez_potomca(oseba):
+    if not rodovnik[oseba]:
+        return oseba
+
+    return brez_potomca(rodovnik[oseba][0])
+
+def brez_potomca_nerekurz(oseba):
+    while rodovnik[oseba]:
+        trenutni = rodovnik[oseba][0]
+        oseba = trenutni
+    return os
+
+#138. Vsi brez potomca
+"""
+def brez_potomcev(oseba):
+    if not rodovnik[oseba]:
+        return {oseba}
+
+    mnozica_brez = set()
+    otroci = rodovnik[oseba]
+    for otrok in otroci:
+        mnozica_brez |= brez_potomcev(otrok)
+    return mnozica_brez
+"""
+
+#139. Kako daleč
+"""
+def globina_do(oseba, ime):
+    if oseba == ime:
+        return 0
+
+    otroci = rodovnik[oseba]
+    for otrok in otroci:
+        rezultat = globina_do(otrok, ime)
+        if rezultat != -1:
+            return rezultat + 1
+
+    return -1
+"""
+
+#140. Pot do
+"""
+def pot_do(oseba, ime):
+    if oseba == ime:
+        return [oseba]
+
+    otroci = rodovnik[oseba]
+    for otrok in otroci:
+        rezultat = pot_do(otrok, ime)
+        if rezultat is not None:
+            return [oseba] + rezultat
+    return None
+"""
+
 
 #167. Stopnice
 """
