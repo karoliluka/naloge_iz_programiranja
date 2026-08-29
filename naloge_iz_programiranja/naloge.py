@@ -866,6 +866,120 @@ def cokolada(n, odlomi):
 print(cokolada(10, ["<3", "v5"]))
 """
 
+#67. Razcep na praštevila
+"""
+def prastevilo(n):
+    if n < 2:
+        return False
+    for i in range(2, n):
+        if n % i == 0:
+            return False
+    return True
+
+def prastevila(n):
+    seznam_prastevil = []
+    for i in range(n + 1):
+        if prastevilo(i):
+            seznam_prastevil.append(i)
+    return seznam_prastevil
+
+def deljivost(n, i):
+    stevec = 0
+    while n % i == 0:
+        n //= i
+        stevec += 1
+    return stevec
+
+
+def razcep(n):
+    vsa_prastevila = prastevila(n)
+    rez = []
+    for pr in vsa_prastevila:
+        pojavitev_pr = deljivost(n, pr)
+        if pojavitev_pr:
+            rez.append((pr, pojavitev_pr))
+    return rez
+"""
+
+#68. Pari števil
+"""
+def vsota_stevk(n):
+    vsota = 0
+    for stevka in str(n):
+        vsota += int(stevka)
+    return vsota
+
+
+def pari():
+    mnozica_parov = set()
+    for i in range(1001):
+        for j in range(i + 1 , 1001):
+            if vsota_stevk(i) == vsota_stevk(j) and len(str(i)) != len(str(j)):
+                mnozica_parov.add((i, j))
+                #mnozica_parov.add(frozenset({i, j})) -> potem ni treba i + 1 v for (j)
+    return mnozica_parov
+"""
+
+#69. Ploščina poligona
+"""
+def ploscina(o):
+    vsota = 0
+    n = len(o)
+    for i in range(n):
+        x1, y1 = o[i]
+        x2, y2 = o[(i + 1) % n]  # naslednje oglišče, zadnje se "zavrti" nazaj na prvo
+        vsota += x1 * y2 - x2 * y1
+    return abs(vsota) / 2
+"""
+
+#70. Sodost čebel
+"""
+def loci(cebele):
+    seznam_lihih, seznam_sodih = [], []
+    for cebela, st in cebele:
+        if st % 2 == 0:
+            seznam_sodih.append(cebela)
+        else:
+            seznam_lihih.append(cebela)
+    return seznam_sodih, seznam_lihih
+
+print(loci([('Ana', 5), ('Berta', 7), ('Cilka', 2)]))
+"""
+
+#71. Sodi - lihi
+"""
+def sodi_lihi(sez):
+    for el1, el2 in pairwise(sez):
+        if el1 % 2 == 1 and el2 % 2 == 1:
+            return False
+        elif el1 % 2 == 0 and el2 % 2 == 0:
+            return False
+    return True
+
+print(sodi_lihi([3, 4, 5, 6, 3, 2, 7, 12]))
+print(sodi_lihi([3, 4, 5, 5, 6, 3, 2, 7, 12]))
+print(sodi_lihi([3, 4]))
+print(sodi_lihi([3, 3]))
+print(sodi_lihi([3]))
+print(sodi_lihi([]))
+"""
+
+#72. Najprej lihi
+"""
+def najprej_lihi(s):
+    seznam_lihih = []
+    seznam_sodih = []
+    for el in s:
+        if el % 2 == 0:
+            seznam_sodih.append(el)
+        else:
+            seznam_lihih.append(el)
+    s[:] = seznam_lihih + seznam_sodih
+
+print(najprej_lihi([5, 8, 4, 17, 13, 10, 9]))
+"""
+
+
 #78. Pokaži črke
 """
 def pokazi_crke(beseda, crke):
@@ -935,6 +1049,95 @@ def samo_enkrat(s):
     return True
 
 print(samo_enkrat("aa"))
+"""
+
+#83. Popularni rojstni dnevi
+"""
+def histogram_dni(imedat):
+    slovar_dnevov = defaultdict(int)
+    with open(imedat, "r", encoding="utf-8") as datoteka:
+        for vrstica in datoteka:
+            emso = vrstica.strip()
+            dan = emso[0:2]
+            mesec = emso[2:4]
+            format = f"{int(dan)}.{int(mesec):2}."
+            slovar_dnevov[format] += 1
+    for dan, st in slovar_dnevov.items():
+        print(dan,st)
+print(histogram_dni("emso.txt"))
+"""
+
+
+#84. Osrednja obveščevalna služba
+"""
+msg = Dragi Ahmed kako si kaj Upam da so otroci že zdravi Mustafa Osama in jaz
+smo se šli danes malo razgledat in kaže kar dobro Abdulah pa ni mogel zraven je
+šel v Pešavar prodat še tri kamele Osama sicer pravi da se mu to pred zimo ne
+splača ampak saj veš kakšen je Abdulah tak je kot Harun nič jima ne dopoveš še
+Osama ne Jibril me kliče moram iti oglasi se kaj na Skype tvoj Husein
+
+def obs(msg):
+    slovar_imen = defaultdict(int)
+    for beseda in msg.split(" "):
+        if beseda[0].isupper():
+            slovar_imen[beseda] += 1
+            
+    for ime, st in slovar_imen.items():
+        print(ime, st)
+print(obs(msg))
+"""
+
+#85. Menjave
+"""
+def zamenjano(s, menjave):
+    kopija_s = s.copy()
+    for i, ime_s in enumerate(kopija_s):
+        for ime, kam in menjave.items():
+            if ime_s == ime:
+                kopija_s[i] = kam
+    return kopija_s
+
+def zamenjaj(s, menjave):
+    kopija_s = s.copy()
+    for i, ime_s in enumerate(kopija_s):
+        for ime, kam in menjave.items():
+            if ime_s == ime:
+                s[i] = kam
+
+
+print(zamenjano(["Ana", "Ana", "Berta", "Ana", "Cilka"], {"Ana": "Peter", "Berta":"Ana"}))
+print(zamenjaj(["Ana", "Ana", "Berta", "Ana", "Cilka"], {"Ana": "Peter", "Berta":"Ana"}))
+"""
+
+#86. Anagrami
+"""
+def anagram(beseda1, beseda2):
+    return Counter(beseda1) == Counter(beseda2)
+
+print(anagram("pirat", "ripat"))
+print(anagram("tipka", "pirat"))
+print(anagram("tipka", "piikat"))
+print(anagram("bukkake", "bukae"))
+"""
+
+#87. Bomboniera
+"""
+def bomboniera(sirina, visina, pojedeno):
+    vse_koordinate = set()
+    for y in range(visina):
+        for x in range(sirina):
+            vse_koordinate.add((x, y))
+
+    kopija = vse_koordinate.copy()
+    for x, y in kopija:
+        for x_p, y_p in pojedeno:
+            if x == x_p or y == y_p:
+                vse_koordinate.remove((x, y))
+                break
+                #tu bi lahko dali .discard(), ki prezre ce je bil element ze odstranjen in nadaljuje
+    return len(vse_koordinate)
+
+print(bomboniera(8, 5, [(2, 1), (2, 4)]))
 """
 
 
