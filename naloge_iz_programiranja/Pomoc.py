@@ -42,6 +42,7 @@ print(najsirsa_ovira(".##.####...##."))
 """
 
 #Pretvori zemljevid
+"""
 def pretvori_vrstico(vrstica):
     ovire = []
     v_oviri = False
@@ -104,3 +105,5 @@ def huligani(prej, potem):
     seznam_novih = izboljsave(prej, potem)
 
 print("Friderik I.".split()[0][-1])
+"""
+
