@@ -3101,4 +3101,223 @@ def razlika_casov(s1, s2):
 print(razlika_casov("10:00:00", "10:11:5"))
 """
 
+#226. Naslednji avtobus
+"""
+def naslendji_avtobus(prihodi):
+    najhitrejsi_casi_prihodov = defaultdict(int)
+    kdaj = 1440
+    najstev = 99
+    for avtobus, minute in prihodi.items():
+        stev = int(avtobus if avtobus[-1].isdigit() else avtobus[:-1])
+        minute = min(minute)
+        if minute < kdaj or minute == kdaj and stev < najstev:
+            kdaj, najstev, najavtobus = minute, stev, avtobus
+    return najavtobus
+"""
 
+#227. Eboran
+"""
+def eboran(stavek):
+    seznam_besed = []
+    for beseda in stavek.split():
+        seznam_besed.append(beseda[::-1])
+    return " ".join(seznam_besed)
+
+print(eboran("vse je narobe tudi tale stavek"))
+
+def razdeli_na_kose(stavek):
+    kosi = []
+    trenutni_kos = ""
+    for znak in stavek:
+        if trenutni_kos and znak.isalpha() != trenutni_kos[-1].isalpha():
+            kosi.append(trenutni_kos)
+            trenutni_kos = ""
+        trenutni_kos += znak
+    if trenutni_kos:
+        kosi.append(trenutni_kos)
+    return kosi
+"""
+
+#228. Cenzura
+"""
+prepovedane = {"zadnjica", "tepec", "pujs", "kreten"}
+def cenzura(besedilo, prepovedane):
+    nov_stavek = []
+    for beseda in besedilo.split():
+        if beseda.lower() in prepovedane:
+            nov_stavek.append("X" * len(beseda))
+        else:
+            nov_stavek.append(beseda)
+    return " ".join(nov_stavek)
+
+print(cenzura("Pepe je ena navadna zadnjica in pujs in še kaj hujšega", prepovedane))
+print(cenzura("Pepe je ena velika Zadnjica in PUJS in še kaj hujšega", prepovedane))
+print(cenzura("Pepe je okreten", prepovedane))
+
+def cenzura(besedilo, prepovedane):
+    kosi = razdeli_na_kose(besedilo)
+    nov_kosi = []
+    for kos in kosi:
+        if kos.isalpha() and kos.lower() in prepovedane:
+            nov_kosi.append("X" * len(kos))
+        else:
+            nov_kosi.append(kos)
+    return "".join(nov_kosi)
+"""
+
+#229. Črkovalnik
+"""
+def crka(c, a):
+    if a == "U": return c.upper()
+    elif a.isdigit(): return c * int(a)
+    elif a == "x": return ""
+    elif a == ".": return c
+
+def kodiraj(beseda, koda):
+    seznam_besed = []
+    for char, kod in zip(beseda, koda):
+        seznam_besed.append(crka(char, kod))
+    return "".join(seznam_besed)
+
+print(kodiraj("beseda", ".U5.x."))
+"""
+
+#231. Uporabniške skupine
+"""
+def beri_skupine(ime_dat):
+    slovar = defaultdict(list)
+    with open(ime_dat, "r", encoding="utf-8") as datoteka:
+        for vrstica in datoteka:
+            ime_skupine = vrstica.strip().split(":")[0]
+            imena_uporabnikov = vrstica.strip().split(":")[-1]
+            if len(imena_uporabnikov) == 1:
+                slovar[imena_uporabnikov[0]].append(ime_skupine)
+            elif len(imena_uporabnikov) > 1:
+                uporabniki = imena_uporabnikov.split(",")
+                for uporabnik in uporabniki:
+                    slovar[uporabnik].append(ime_skupine)
+    print(slovar)
+
+print(beri_skupine("groups.txt"))
+"""
+
+#232. Skrito sporočilo
+"""
+niz = Nic ne bo. Ana bo ostala doma. Prisla je njena mama. Aleksa tudi
+ne bo. Dejan je zbolel. Groza. Ostali smo samo se jaz, ti in
+Miha. Bolje, da izlet prestavimo. Pa tako sem se ga veselil. 6 dni
+sem cakal na to, da se odpravimo v hribe. Hja, pa drugic...
+
+def skrito_sporocilo(niz):
+    sporocilo = []
+    for beseda in niz.split(". "):
+        sporocilo.append(beseda[0])
+    return "".join(sporocilo)
+
+
+print(skrito_sporocilo(niz))
+"""
+
+#233. Iskanje URLjev
+"""
+s = O regularnih izrazih lahko preberes v Pythonovi -
+http://www.python.org - dokumentaciji, konkretno tule -
+http://docs.python.org/library/re.html - ampak ne med izpitom. Zapiski o
+regularnih izrazih so na http://ucilnica.fri.uni-
+lj.si/mod/resource/view.php?id=5482 (deluje pa tudi
+https://ucilnica.fri.uni-lj.si/mod/resource/view.php?id=5482).
+
+def najdi_URLje(s):
+    url_ji = []
+    for kandidat in s.strip().split():
+        if kandidat.startswith("http://") or kandidat.startswith("https://"):
+            url_ji.append(kandidat)
+    return url_ji
+
+print(najdi_URLje(s))
+"""
+
+#234. Deli URLja
+"""
+def razbijURL(url):
+    seznam = []
+    for kos in url.strip().split("://", maxsplit=1):
+        seznam.extend(kos.split("/", maxsplit=1))
+
+    if len(seznam) == 2:
+        seznam.append("")
+
+    return tuple(seznam)
+
+print(razbijURL("http://ucilnica.fri.uni-lj.si/p1"))
+print(razbijURL("http://ucilnica.fri.uni-lj.si/p1/view.php&id=13"))
+print(razbijURL("http://ucilnica.fri.uni-lj.si/"))
+print(razbijURL("http://ucilnica.fri.uni-lj.si"))
+"""
+
+#235. Trgovski računi
+"""
+def trgovski_racun(ime_dat):
+    skupno = 0
+    vsota = None
+    with open(ime_dat, "r", encoding="utf-8") as datoteka:
+        for vrstica in datoteka:
+            if "\t" in vrstica.strip():
+                if vrstica.strip().split()[0] == "skupaj":
+                    vsota = float(vrstica.strip().split()[-1])
+                    break
+                skupno += float(vrstica.strip().split()[-1])
+    if vsota is None:
+        return False
+    return vsota == skupno
+
+print(trgovski_racun("racun1.txt"))
+"""
+
+#236. Izračun računa
+"""
+def racunaj(cene, nakupi):
+    cena = 0
+    slovar_cen = defaultdict(float)
+    with open(cene, "r", encoding="utf-8") as datoteka:
+        for vrstica in datoteka:
+            izdelek, cena_izdelka = vrstica.strip().split()[0], vrstica.strip().split()[1]
+            slovar_cen[izdelek] = float(cena_izdelka)
+
+    with open(nakupi, "r", encoding="utf-8") as datoteka2:
+        for vrstica in datoteka2:
+            print(vrstica.strip().split())
+            cifra_izdelka, kolicina_nakupa = vrstica.strip().split()[0], float(vrstica.strip().split()[1])
+            price = slovar_cen[cifra_izdelka]
+            cena += price * kolicina_nakupa
+    return cena
+    print(racunaj("cene_izdelkov.txt", "cene_izdelkov2.txt"))
+
+"""
+
+#245. Navodila
+"""
+def navodila(zaporedje):
+    zacetek_zaporedje = False
+    nov_seznam = []
+    stevilke_zaporedje = ""
+    for char in zaporedje:
+        if char.isdigit() and zacetek_zaporedje is False:
+            stevilke_zaporedje += char
+            zacetek_zaporedje = True
+        elif char.isdigit() and zacetek_zaporedje is True:
+            stevilke_zaporedje += char
+        elif not char.isdigit() and zacetek_zaporedje is True:
+            nov_seznam.append(int(stevilke_zaporedje))
+            zacetek_zaporedje = False
+            stevilke_zaporedje = ""
+            nov_seznam.append(char)
+        elif not char.isdigit() and zacetek_zaporedje is False:
+            nov_seznam.append(char)
+    if zacetek_zaporedje:
+        nov_seznam.append(int(stevilke_zaporedje))
+    return nov_seznam
+
+print(navodila("7D3221LL"))
+
+"""
