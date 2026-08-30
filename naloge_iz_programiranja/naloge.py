@@ -4,7 +4,9 @@ import random
 from collections import defaultdict, Counter
 from datetime import date
 from enum import unique
-from itertools import pairwise, combinations
+from itertools import pairwise, combinations, count
+import string
+from collections import defaultdict
 
 #--------------
 #Čisti začetek
@@ -979,6 +981,83 @@ def najprej_lihi(s):
 print(najprej_lihi([5, 8, 4, 17, 13, 10, 9]))
 """
 
+#73. Sodo in liho in sodo in liho
+"""
+s = [5, 8, 4, 2, 8, 17, 13, 10, 2, 4, 6, 8, 9]
+def soda_liha(s):
+    soda = [num for num in s if num % 2 == 0]
+    liha = [num for num in s if num % 2 == 1]
+
+    nov_seznam = []
+    for sod, lih in zip(soda, liha):
+        nov_seznam.append(sod)
+        nov_seznam.append(lih)
+    s[:] = nov_seznam
+    return s
+
+print(soda_liha(s))
+"""
+
+#74. Plus - minus - plus
+"""
+def alterniraj(s):
+    je_pozitivno = False
+    nov_s = []
+    for num in s:
+        if num > 0 and je_pozitivno is False:
+            nov_s.append(num)
+            je_pozitivno = True
+        elif num > 0 and je_pozitivno:
+            continue
+        elif num < 0 and je_pozitivno:
+            nov_s.append(num)
+            je_pozitivno = False
+        elif num < 0 and je_pozitivno is False:
+            continue
+    s[:] = nov_s
+
+print(alterniraj([3, 4, -1, 1, -5, -2, -1, 7, -8]))
+"""
+
+#75. Pecivo
+"""
+def pecivo(s):
+    spekla = 0
+    i = 0
+    while i < len(s):
+        if "ABO"[spekla % 3] == s[i]:
+            i += 1
+        spekla += 1
+    return spekla - len(s)
+
+print(pecivo("AAABAABOAABO"))
+"""
+
+#76. Nogavice brez para
+"""
+def nogavice(s):
+    unikatne = set(s)
+    lihe = [st for st in unikatne if s.count(st) % 2 == 1]
+    obrnjen = s[::-1]
+    lihe.sort(key=lambda st: len(s) - 1 - obrnjen.index(st))
+    return lihe
+"""
+
+#77. Presedanje
+"""
+def enaka_razporeda(razpored1, razpored2):
+    if len(razpored2) != len(razpored1):
+        return False
+
+    podvojen = razpored1 + razpored1
+    for i in range(len(razpored1)):
+        if podvojen[i:i+len(razpored2)] == razpored2:
+            return True
+    return False
+    
+    r1 = ["Ana", "Berta", "Cilka", "Dani", "Ema"]
+print(enaka_razporeda(r1, ["Cilka", "Dani", "Ema", "Ana", "Berta"]))
+"""
 
 #78. Pokaži črke
 """
@@ -1138,6 +1217,201 @@ def bomboniera(sirina, visina, pojedeno):
     return len(vse_koordinate)
 
 print(bomboniera(8, 5, [(2, 1), (2, 4)]))
+"""
+
+#88. Prafaktorji in delitelji
+"""
+def deljivost(n, i):
+    stevec = 0
+    while n % i == 0:
+        n //= i
+        stevec += 1
+    return stevec
+
+def prafaktorji(n):
+    razcep = {}
+    i = 2
+    while n > 1:
+        st = deljivost(n, i)
+        if st > 0:
+            razcep[i] = st
+            n //= i ** st
+        i += 1
+    return razcep
+
+def gcd(a, b):
+    rezultat = 1
+    for prafaktor in a.keys() & b.keys():
+        rezultat *= prafaktor ** min(a[prafaktor], b[prafaktor])
+    return rezultat
+"""
+
+#89. Hamilkon
+"""
+def hamilkon(s):
+    vsa_polja = set()
+    for crka in range(ord("a"), ord("i")):
+        for st in range(1, 9):
+            vsa_polja.add(chr(crka) + str(st))
+
+    if len(s[:-1]) == 64 and set(s[:-1]) == vsa_polja and s[0] == s[-1]:
+        return False
+
+    premiki = {(2, 1), (2, -1), (-2, 1), (-2, -1),
+               (1, 2), (1, -2), (-1, 2), (-1, -2)}
+
+    for polje1, polje2 in zip(s, s[1:]):
+        x1 = ord(polje1[0]) - ord("a")
+        y1 = int(polje1[1])
+        x2 = ord(polje2[0]) - ord("a")
+        y2 = int(polje2[1])
+        if (x2 - x1, y2 - y1) not in premiki:
+            return False
+
+    return True
+
+print(hamilkon(["g3", "h1", "f2", "d1"]))
+"""
+
+#90. Družinsko drevo
+"""
+def druzinsko_drevo(ime_datoteke):
+    druzinski_slovar = defaultdict(list)
+    with open(ime_datoteke, "r", encoding="utf-8") as datoteka:
+        for vrstica in datoteka:
+            stars, otrok = vrstica.strip().split()[0], vrstica.strip().split()[1]
+            druzinski_slovar[stars].append(otrok)
+    print(druzinski_slovar)
+    return druzinski_slovar
+
+print(druzinsko_drevo("druzina.txt"))
+"""
+
+#91. Naključno generirano besedilo
+"""
+def nasledniki(s):
+    slovar_besed = defaultdict(list)
+    for b1, b2 in pairwise(s.split()):
+        slovar_besed[b1].append(b2)
+    return slovar_besed
+
+def filozofiraj(besede, dolzina):
+    generiran_niz = ""
+    trenutna_beseda = random.choice(list(besede.keys()))
+    generiran_niz += trenutna_beseda + " "
+
+    for i in range(dolzina - 1):
+        trenutna_beseda = random.choice(besede[trenutna_beseda])
+        generiran_niz += trenutna_beseda + " "
+        if trenutna_beseda not in besede:
+            break
+
+    return generiran_niz
+
+print(filozofiraj({'smo': ['mi'], 'to': ['in', 'smo'], 'ono': ['in'], 'in': ['to', 'ono', 'to']}, 30))
+"""
+
+#92. Grde besede
+"""
+grde_besede = {
+'kreten': ['kljukec'],
+'idiot': ['mentalno zaostala oseba', 'omejen clovek']
+}
+
+def f_grde_besede(niz):
+    seznam_besed = niz.split()
+    kopija_seznama = seznam_besed.copy()
+    for i, beseda in enumerate(kopija_seznama):
+        if beseda in grde_besede:
+            seznam_besed[i] = random.choice(grde_besede[beseda])
+    return " ".join(seznam_besed)
+
+print(f_grde_besede("Joj ta Python spet se počutim kot idiot"))
+
+"""
+
+#93. Kronogrami
+"""
+rimski_slovar = {
+    "I": 1,
+    "V": 5,
+    "X": 10,
+    "L": 50,
+    "C": 100,
+    "D": 500,
+    "M": 1000
+}
+def kronogrami(niz):
+    letnica = 0
+    for char in niz:
+        if char in rimski_slovar:
+            letnica += rimski_slovar[char]
+    print(letnica)
+
+print(kronogrami("CVIVS IN HOC RENOVATA LOCO PIA FVLGET IMAGO SIS CVSTOS POPVLI SANCTE IACOBE TVI"))
+"""
+
+#94. Posebnež
+"""
+def posebnez(bomboni):
+    stevec_vrednosti = Counter(bomboni.values())
+    izjemna_vrednost = min(stevec_vrednosti, key=stevec_vrednosti.get)
+    for ime, st in bomboni.items():
+        if st == izjemna_vrednost:
+            return ime
+    return None
+
+bomboni1 = {"Ana": 5, "Berta": 5, "Cene": 5, "David": 2}
+bomboni2 = {"Ana": 3, "Berta": 3, "Cene": 3, "David": 3, "Eva": 9}
+bomboni3 = {"Ana": 1, "Berta": 4, "Cene": 4, "David": 4}
+bomboni4 = {"Ana": 7, "Berta": 7, "Cene": 2}
+"""
+
+#95. Sumljive besede
+"""
+def sumljiva(s):
+    besede = s.split()
+    n = len(besede)
+    mnozica_crk = set(s)
+    slovar = defaultdict(int)
+    for crka in mnozica_crk:
+        for beseda in besede:
+            if crka in beseda:
+                slovar[crka] += 1
+
+    sumljiva_crka = None
+    for crka, stevilo in slovar.items():
+        if stevilo == n - 1:
+            sumljiva_crka = crka
+            break
+
+    for beseda in besede:
+        if sumljiva_crka not in beseda:
+            return beseda
+
+print(sumljiva("Tale stavek pa ima drugo takšno"))
+
+def sumljiva(s):
+    besede = [b.strip(string.punctuation) for b in s.split()]
+    besede = [b for b in besede if b]   # odstranimo morebitne prazne "besede"
+
+    n = len(besede)
+    mnozica_crk = set(''.join(besede))
+    slovar = defaultdict(int)
+    for crka in mnozica_crk:
+        for beseda in besede:
+            if crka in beseda:
+                slovar[crka] += 1
+
+    sumljiva_crka = None
+    for crka, stevilo in slovar.items():
+        if stevilo == n - 1:
+            sumljiva_crka = crka
+            break
+
+    for beseda in besede:
+        if sumljiva_crka not in beseda:
+            return beseda
 """
 
 #15.5.2026
@@ -1727,6 +2001,7 @@ print(najvec_otrok_kdo('Ulrik II.'))
 """
 
 #137. Brez potomca
+"""
 def brez_potomca(oseba):
     if not rodovnik[oseba]:
         return oseba
@@ -1738,6 +2013,7 @@ def brez_potomca_nerekurz(oseba):
         trenutni = rodovnik[oseba][0]
         oseba = trenutni
     return os
+"""
 
 #138. Vsi brez potomca
 """
