@@ -2057,6 +2057,101 @@ def pot_do(oseba, ime):
     return None
 """
 
+#141. Zaporedja soimenjakov
+"""
+def ime_brez_stevilke(ime):
+    return ime.split()[0]
+
+def dolzina_verige(oseba):
+    if not rodovnik[oseba]:
+        return 1
+
+    najdaljsa = 1
+    for otrok in rodovnik[oseba]:
+        if ime_brez_stevilke(otrok) == ime_brez_stevilke(oseba):
+            dolzina_verige_otrok = dolzina_verige(otrok)
+            if dolzina_verige_otrok + 1 > najdaljsa:
+                najdaljsa = dolzina_verige_otrok + 1
+    return najdaljsa
+
+def najdaljse_zaporedje(oseba):
+    najdaljsa = (dolzina_verige(oseba), ime_brez_stevilke(oseba))
+    for otrok in rodovnik[oseba]:
+        otrok_zap = najdaljse_zaporedje(otrok)
+        if otrok_zap > najdaljsa:
+            najdaljsa = otrok_zap
+    return najdaljsa
+"""
+
+#142. Fakulteta
+"""
+def fakulteta(n):
+    if n == 0:
+        return 1
+    return n * fakulteta(n - 1)
+
+print(fakulteta(5))
+"""
+
+#143. Fibonacijeva števila
+"""
+def fibonaci(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibonaci(n - 1) + fibonaci(n - 2)
+
+print(fibonaci(12))
+"""
+
+#144. Vsota seznama
+"""
+def vsota(s):
+    if not s:
+        return 0
+    return s[0] + vsota(s[1:])
+
+print(vsota([1, 2, 3]))
+"""
+
+#145. Iskanje elementa
+"""
+def vsebuje(s, x):
+    if not s:
+        return False
+    return s[0] == x or vsebuje(s[1:], x)
+
+print(vsebuje([1, 2, 3], 2))
+"""
+
+#146. Enaka seznama
+"""
+def enaka(s, t):
+    if len(s) != len(t):
+        return False
+    if not s:
+        return True
+    return s[0] == t[0] and enaka(s[1:], t[1:])
+
+print(enaka([1, 2, 3], [1,2, 3]))
+"""
+
+#147. Palindrom
+"""
+def palindrom(s):
+    if len(s) < 2:
+        return True
+    return s[0] == s[-1] and palindrom(s[1:-1])
+"""
+"""
+def palindrom(s):
+    if s == s[::-1]:
+        return True
+    return False
+
+print(palindrom(""))
+"""
 
 #167. Stopnice
 """
@@ -2731,6 +2826,198 @@ def legalni_skoki(koordinate):
 
     return seznam_dosegljivih
 """
+vrt = [[1,3,3,8,5,4,2,1,5,6],
+[2,4,3,3,6,8,1,3,5,6],
+[4,5,6,4,7,4,3,6,4,7],
+[2,8,7,0,0,7,4,7,8,0],
+[2,3,4,7,0,8,7,6,3,8],
+[3,7,9,0,8,5,3,2,3,4],
+[1,5,7,7,6,4,2,3,5,6],
+[0,6,3,3,6,8,0,6,7,7],
+[0,1,3,2,8,0,0,0,0,0],
+[3,1,0,3,6,7,0,5,3,1],
+[1,3,5,7,0,8,6,5,3,1],
+[3,6,3,1,3,5,8,7,5,1],
+[4,3,6,0,0,8,4,7,5,3],
+[3,5,6,8,6,3,1,3,5,2]]
+#209. Pravilna pot
+"""
+def pravilna_pot(pot, vrt):
+    x, y = 0, 0
+    for char in pot:
+        left, right, up, down = (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
+
+        if char == "L":
+            x, y = left
+        elif char == "R":
+            x, y = right
+        elif char == "U":
+            x, y = up
+        else:
+            x, y = down
+
+        if not (0 <= y < len(vrt) and 0 <= x < len(vrt[y])):
+            return False
+    return True
+"""
+
+#210. Dobiček na poti
+"""
+def dobicek_na_poti(pot, vrt):
+    x, y = 0, 0
+    nabrano = vrt[y][x]
+    for char in pot:
+        left, right, up, down = (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
+        if char == "L":
+            x, y = left
+            nabrano += vrt[y][x]
+        elif char == "R":
+            x, y = right
+            nabrano += vrt[y][x]
+        elif char == "U":
+            x, y = up
+            nabrano += vrt[y][x]
+        else:
+            x, y = down
+            nabrano += vrt[y][x]
+    return nabrano
+
+print(dobicek_na_poti("RDDL", vrt))
+"""
+
+#211. Enkratna pot
+"""
+def brez_ponovitve(pot):
+    obiskani = set()
+    x, y = 0, 0
+    obiskani.add((x, y))
+    for char in pot:
+        left, right, up, down = (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
+        if char == "L":
+            x, y = left
+            if (x, y) not in obiskani:
+                obiskani.add((x, y))
+            else:
+                return False
+        elif char == "R":
+            x, y = right
+            if (x, y) not in obiskani:
+                obiskani.add((x, y))
+            else:
+                return False
+        elif char == "U":
+            x, y = up
+            if (x, y) not in obiskani:
+                obiskani.add((x, y))
+            else:
+                return False
+        else:
+            x, y = down
+            if (x, y) not in obiskani:
+                obiskani.add((x, y))
+            else:
+                return False
+    return True
+
+print(brez_ponovitve("DDRUUR"))
+
+def brez_ponovitve(pot):
+    premiki = {'L': (-1, 0), 'R': (1, 0), 'U': (0, -1), 'D': (0, 1)}
+    x, y = 0, 0
+    obiskani = {(x, y)}
+    for char in pot:
+        dx, dy = premiki[char]
+        x, y = x + dx, y + dy
+        if (x, y) in obiskani:
+            return False
+        obiskani.add((x, y))
+    return True
+"""
+
+#212. Neobrani cvetovi
+"""
+def ostanki(vrt, pot):
+    kopija_vrta = vrt.copy()   # da ne spremenimo izvirnega seznama
+    polozaj = 0
+    vsota = 0
+
+    if kopija_vrta[polozaj] == 0:
+        return sum(kopija_vrta)
+
+    vsota += kopija_vrta[polozaj]
+    kopija_vrta[polozaj] = 0
+
+    for premik in pot:
+        polozaj += premik
+        if kopija_vrta[polozaj] == 0:
+            break
+        vsota += kopija_vrta[polozaj]
+        kopija_vrta[polozaj] = 0
+
+    return sum(kopija_vrta)
+
+
+vrt1 = [5, 1, 3, 2, 5, 7, 3, 12, 2]
+pot1 = [4, -3, 2]
+print(ostanki(vrt1, pot1))
+"""
+
+#213. Žabji skoki
+"""
+def zaba(skoki):
+    x, y = 0, 0
+    mnozica_obisanih = {(x, y)}
+    for (smer, koliko) in skoki:
+        slovar_skokov = {"S": (x, y + koliko), "J": (x, y - koliko), "V": (x - koliko, y), "Z": (x + koliko, y)}
+        x, y = slovar_skokov[smer]
+        mnozica_obisanih.add((x, y))
+
+    print(mnozica_obisanih)
+
+print(zaba([("S", 5), ("Z", 2), ("V", 6), ("S", 3)]))
+
+def zaba_znotraj(skoki, max_x, max_y):
+    x, y = 0, 0
+    for (smer, koliko) in skoki:
+        slovar_skokov = {"S": (x, y + koliko), "J": (x, y - koliko), "V": (x - koliko, y), "Z": (x + koliko, y)}
+        x, y = slovar_skokov[smer]
+        if not (0 <= x <= max_x and 0 <= y <= max_y):
+            return False
+    return True
+
+print(zaba_znotraj([("S", 5), ("Z", 2), ("V", 6), ("S", 3)], 5, 10))
+print(zaba_znotraj([("S", 3), ("V", 2)], 5, 5))
+"""
+
+#214. Lov na muhe
+"""
+def muhe(koordinate, skoki):
+    x, y = 0, 0
+    st_pojedenih = 0
+    koordinate_kopija = koordinate.copy()
+    for (smer, koliko) in skoki:
+        slovar_skokov = {"S": (x, y + koliko), "J": (x, y - koliko), "V": (x - koliko, y), "Z": (x + koliko, y)}
+        x, y = slovar_skokov[smer]
+        if (x, y) in koordinate_kopija:
+            st_pojedenih += 1
+            koordinate_kopija.remove((x, y))
+    return st_pojedenih
+
+def pojedene(koordinate, skoki):
+    x, y = 0, 0
+    koordinate_pojedenih = set()
+    koordinate_kopija = koordinate.copy()
+    for (smer, koliko) in skoki:
+        slovar_skokov = {"S": (x, y + koliko), "J": (x, y - koliko), "V": (x - koliko, y), "Z": (x + koliko, y)}
+        x, y = slovar_skokov[smer]
+        if (x, y) in koordinate_kopija:
+            koordinate_pojedenih.add((x, y))
+            koordinate_kopija.remove((x, y))
+    return koordinate_pojedenih
+
+def prezivele(koordinate, skoki):
+    return koordinate - pojedene(koordinate, skoki)
+"""
 
 #219. Slovar anagramov
 """
@@ -2785,4 +3072,33 @@ def skoki(s):
 s = [3, 4, 0, 4, 2, 3]
 print(skoki(s))
 """
+
+#225. Sekunde
+"""
+def cas_v_sekunde(s):
+    ure = int(s.split(":")[0])
+    minute = int(s.split(":")[1])
+    sekunde = int(s.split(":")[2])
+    vsota = ure * 3600 + minute * 60 + sekunde
+    return vsota
+
+print(cas_v_sekunde("10:00:00"))
+print(cas_v_sekunde("0:0:0"))
+print(cas_v_sekunde("10:05:12"))
+
+def sekunde_v_cas(s):
+    ure = int(s) // 3600
+    minute = (int(s) % 3600) // 60
+    sekunde = int(s) % 60
+    format = f"{ure}:{minute:02}:{sekunde:02}"
+    return format
+
+print(sekunde_v_cas(36312))
+
+def razlika_casov(s1, s2):
+    return sekunde_v_cas(cas_v_sekunde(s2) - cas_v_sekunde(s1))
+
+print(razlika_casov("10:00:00", "10:11:5"))
+"""
+
 
